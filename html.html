@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition System</title>
+    <link rel="stylesheet" href="a.css">
+    
+</head>
+<body>
+    <h1>Speech Recognition System</h1>
+   
+    <button id="startButton">Start Recording</button>
+    <button id="stopButton" disabled>Stop Recording</button>
+    
+    <button class="lang" id="engLang">English</button>
+    <button class="lang" id="hinLang">Hindi</button>
+
+    <div id="output"></div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const engButton = document.getElementById('engLang');
+        const hinpButton = document.getElementById('hinLang');
+        const output = document.getElementById('output');
+        let recognition;
+
+        // Check if the browser supports speech recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                output.innerHTML = 'Listening...';
+                startButton.disabled = true;
+                stopButton.disabled = false;
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[event.results.length - 1][0].transcript;
+                output.innerHTML = transcript;
+            };
+
+            recognition.onend = () => {
+                output.innerHTML += '<br>Speech recognition stopped.';
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            };
+
+            startButton.addEventListener('click', () => {
+                recognition.start();
+            });
+
+            stopButton.addEventListener('click', () => {
+                recognition.stop();
+            });
+
+            engButton.addEventListener('click', () => {
+                recognition.lang= 'en-US';
+            });
+
+            hinButton.addEventListener('click', () => {
+                recognition.lang= 'hi-IN';
+            });
+
+        } else {
+            output.innerHTML = 'Speech recognition is not supported in this browser.';
+            startButton.disabled = true;
+            stopButton.disabled = true;
+        }
+    </script>
+</body>
+</html>
